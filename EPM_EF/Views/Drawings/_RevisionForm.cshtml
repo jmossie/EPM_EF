@@ -29,8 +29,8 @@
                 @Html.TextBoxFor(m => m.RevisionNumber, new { @class = "form-control" })
             </div>
             <div class="form-group">
-                @Html.LabelFor(m => m.ReleaseStatus_ID, new { @class = "control-label" })
-                @Html.DropDownListFor(m => m.ReleaseStatus_ID,
+                @Html.LabelFor(m => m.ReleaseStatus, new { @class = "control-label" })
+                @Html.DropDownListFor(m => m.ReleaseStatus,
                     (SelectList)ViewBag.StatusSelectListItems, "", new { @class = "form-control" })
 
             </div>

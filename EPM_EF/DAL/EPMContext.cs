@@ -13,6 +13,7 @@ namespace EPM_EF.DAL
 
         public DbSet<Drawing> Drawings { get; set; }
         public DbSet<DrawingRevision> DrawingRevisions { get; set; }
+        public DbSet<ReleaseStatus> ReleaseStatus { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

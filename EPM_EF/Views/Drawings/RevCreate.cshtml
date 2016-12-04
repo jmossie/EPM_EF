@@ -1,26 +1,21 @@
 ﻿@model EPM_EF.Models.DrawingRevision
-// get latrevision from previous call. look at class using routing
 
 @{
     ViewBag.Title = "Create Revision";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h2>@ViewBag.Title</h2>
-@{var drawingName = Model.DrawingName;}
+@{var drawingName = ViewBag.drawingNumber;}
 <h3>Creating a revision for @drawingName</h3>
 @Html.Partial("_RevisionForm")
 
 
-<h2>Create</h2>
-    @{var lastRevisionNumber = Model.DrawingRevisions.OrderBy(dr => dr.CreationDate).ToList().LastOrDefault().RevisionNumber ;}
-    @{var lastRevision = Model.DrawingRevisions.OrderBy(dr => dr.CreationDate).ToList().LastOrDefault();}
-    <h3>The last revision is @lastRevisionNumber</h3>
-    <h3>The last revision is @lastRevision.RevisionName</h3>
+@*<h2>Create</h2>
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
         <div class="form-horizontal">
-            <h4>Creating New Revision for @Model.DrawingNumber </h4>
+            <h4>Creating New Revision for @ViewBag.drawingNumber </h4>
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">
@@ -36,4 +31,4 @@
                 </div>
             </div>
         </div>
-    }
+    }*@

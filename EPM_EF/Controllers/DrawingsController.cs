@@ -64,33 +64,35 @@ namespace EPM_EF.Controllers
             string lastrevision = db.DrawingRevisions.Where(dr => dr.DrawingID == DrawingId).ToList().OrderBy(dr => dr.RevisionNumber).LastOrDefault().RevisionNumber;
             var charrevision = lastrevision.ToCharArray()[0];
             charrevision++;
+            ViewBag.drawingNumber = db.Drawings.Where(d => d.ID == DrawingId).SingleOrDefault().DrawingNumber;
+            string uID = Guid.NewGuid().ToString();    
             var nextrevision = charrevision.ToString();
             var revision = new DrawingRevision()
             {
                 CreationDate = DateTime.Today,
                 DrawingID = DrawingId,
-                RevisionNumber = nextrevision
+                RevisionNumber = nextrevision,
+                ID = uID
             };
-            //SetupStatusSelectListItems();
+            SetupStatusSelectListItems();
             return View(revision);
         }
 
         [HttpPost]
-        //public ActionResult RevCreate(DrawingRevision revision)
-        //{
-        //    //ValidateEntry(drawing);
-        //    if (ModelState.IsValid)
-        //    {
-        //        _drawingRepository.AddRevision(revision);
-        //        TempData["Message"] = "Your entry was successfully added";
-        //        Drawing drawing = _drawingRepository.GetDrawing(revision.DrawingId);
-        //        drawing.LatestRev = revision.ID;
-        //        return RedirectToAction("Index");
-        //    }
+        public ActionResult RevCreate([Bind(Include = "ID,RevisionNumber,RevisionName,CreationDate,DrawingID,ReleaseStatus_ID,Notes")] DrawingRevision revision)
+        {
+            //ValidateEntry(drawing);
+            if (ModelState.IsValid)
+            {
+                db.DrawingRevisions.Add(revision);
+                db.SaveChanges();
+                TempData["Message"] = "Your entry was successfully added";
+                return RedirectToAction("Index");
+            }
 
-        //    SetupStatusSelectListItems();
-        //    return View(revision);
-        //}
+            //SetupStatusSelectListItems();
+            return View(revision);
+        }
 
         // GET: Drawings/Create
         public ActionResult Create()
@@ -151,10 +153,10 @@ namespace EPM_EF.Controllers
             }
             base.Dispose(disposing);
         }
-        //private void SetupStatusSelectListItems()
-        //{
-        //    ViewBag.StatusSelectListItems = new SelectList(
-        //       db.DrawingRevision.Statuses, "Id", "Name");
-        //}
+        private void SetupStatusSelectListItems()
+        {
+            ViewBag.StatusSelectListItems = new SelectList(
+               db.ReleaseStatus, "ID", "StatusName");
+        }
     }
 }
