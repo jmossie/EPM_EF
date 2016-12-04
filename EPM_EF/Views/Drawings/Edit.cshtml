@@ -1,0 +1,9 @@
+﻿@model EPM_EF.Models.Drawing
+@{
+    ViewBag.Title = Model.DrawingName;
+    ViewBag.ShowBackBar = true;
+}
+
+<h2>@Model.DrawingName</h2>
+
+@Html.Partial("_EntryForm")

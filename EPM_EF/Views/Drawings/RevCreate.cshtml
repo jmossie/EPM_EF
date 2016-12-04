@@ -1,0 +1,39 @@
+﻿@model EPM_EF.Models.DrawingRevision
+// get latrevision from previous call. look at class using routing
+
+@{
+    ViewBag.Title = "Create Revision";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>@ViewBag.Title</h2>
+@{var drawingName = Model.DrawingName;}
+<h3>Creating a revision for @drawingName</h3>
+@Html.Partial("_RevisionForm")
+
+
+<h2>Create</h2>
+    @{var lastRevisionNumber = Model.DrawingRevisions.OrderBy(dr => dr.CreationDate).ToList().LastOrDefault().RevisionNumber ;}
+    @{var lastRevision = Model.DrawingRevisions.OrderBy(dr => dr.CreationDate).ToList().LastOrDefault();}
+    <h3>The last revision is @lastRevisionNumber</h3>
+    <h3>The last revision is @lastRevision.RevisionName</h3>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal">
+            <h4>Creating New Revision for @Model.DrawingNumber </h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+               @Html.LabelFor(model => model.DrawingNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DrawingNumber, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DrawingNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Create" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }

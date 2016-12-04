@@ -1,0 +1,119 @@
+﻿@model List<EPM_EF.Models.Drawing>
+@{
+    ViewBag.Title = "Drawing Register";
+}
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        @TempData["Message"]
+    </div>
+}
+
+<div class="stats">
+    <h2 class="stats-header h3">Number of Drawings</h2>
+    <div class="stats-left">
+        @*<span class="stats-number">@ViewBag.NumOfDrawings.ToString("n0")</span> total*@
+    </div>
+    <div class="stats-right">
+        <span class="stats-number">Project Completion %</span> total
+    </div>
+</div>
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+    <p>
+        Search: @Html.TextBox("SearchString")
+        <input class="btn btn-warning btn-sm margin-right" type="submit" value="Search" />
+        &nbsp;&nbsp;&nbsp;
+        <a href="@Url.Action("Index", new { ShowAllRevs = ViewBag.RevVisibilityParm == "All" ? "Latest" : "All" })" class="btn btn-primary btn-sm margin-right">
+            <span class="glyphicon glyphicon-list"></span><span class="hidden-xs">
+                @if (ViewBag.RevVisibilityParm != "All")
+                {
+                    @:Show All Revisions
+                    }
+                else
+                {
+                    @:Show Latest Revision Only
+                    }
+            </span>
+        </a>
+    </p>
+}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>@Html.ActionLink("Drawing Number", "Index", new { sortOrder = ViewBag.NameSortParm })</th>
+            <th>Drawing Revision</th>
+            <th>Name</th>
+            <th>@Html.ActionLink("Creation Date", "Index", new { sortOrder = ViewBag.DateSortParm })</th>
+            <th>&nbsp;</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var drawing in Model)
+            {
+            <tr>
+
+                <td>@drawing.DrawingNumber</td>
+                @if (ViewBag.RevVisibilityParm == "Latest")
+                {
+                    <td>@drawing.LatestRev</td>
+                }
+                else
+                {
+                    <td></td>
+                }
+                <td>@drawing.DrawingName</td>
+                <td>@drawing.CreationDate</td>
+                <td>
+                    @*<div class="pull-right">
+                        <a href="@Url.Action("Detail", new { id = drawing.Id })" class="btn btn-warning btn-sm margin-right">
+                            <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Edit</span>
+                        </a>
+                        <a href="@Url.Action("RevCreate", new { DrawingId = drawing.Id })" class="btn btn-success btn-sm margin-right">
+                            <span class="glyphicon glyphicon-plus"></span><span class="hidden-xs"> New Rev.</span>
+                        </a>
+                        <a href="@Url.Action("Delete", new { id = drawing.Id })" class="btn btn-danger btn-sm">
+                            <span class="glyphicon glyphicon-trash"></span><span class="hidden-xs"> Delete</span>
+                        </a>
+                    </div>*@
+                </td>
+            </tr>
+            @*if (drawing.Revisions != null && ViewBag.RevVisibilityParm != "Latest")
+            {
+                foreach (var revision in drawing.Revisions)
+                {
+                    <tr>
+                        <td></td>
+                        <td>@revision.ID</td>
+                        <td>@revision.Name</td>
+                        <td>@revision.CreateDate</td>
+                        <td>
+                            <div class="pull-right">
+                                <a href="@Url.Action("RevDetail", new { rid = drawing.Id + "x" + revision.UID })" class="btn btn-warning btn-sm margin-right">
+                                    <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Edit</span>
+                                </a>
+                                <a href="@Url.Action("Delete", new { id = drawing.Id })" class="btn btn-danger btn-sm">
+                                    <span class="glyphicon glyphicon-trash"></span><span class="hidden-xs"> Delete</span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }*@
+
+
+
+        }
+    </tbody>
+
+</table>
+@*</div>*@
+

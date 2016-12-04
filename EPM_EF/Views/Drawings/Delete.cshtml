@@ -1,0 +1,64 @@
+﻿@model EPM_EF.Models.Drawing
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Drawing</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DrawingNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DrawingNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DrawingName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DrawingName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LatestRev)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LatestRev)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Notes)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Notes)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>
