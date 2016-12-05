@@ -1,30 +1,30 @@
-﻿@model EPM_EF.Models.Drawing
+﻿@model EPM_EF.Models.DrawingRevision
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Delete Revision";
 }
 
 <h2>Delete</h2>
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>Drawing</h4>
+    <h4>Drawing Revision</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.DrawingNumber)
+            @Html.DisplayNameFor(model => model.RevisionNumber)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.DrawingNumber)
+            @Html.DisplayFor(model => model.RevisionNumber)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.DrawingName)
+            @Html.DisplayNameFor(model => model.RevisionName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.DrawingName)
+            @Html.DisplayFor(model => model.RevisionName)
         </dd>
 
         <dt>

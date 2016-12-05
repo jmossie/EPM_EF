@@ -21,14 +21,14 @@ namespace EPM_EF.Controllers
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "DrawingNumber" : "";
             ViewBag.DateSortParm = sortOrder == "Creation Date" ? "CreateDate" : "Date";
             ViewBag.RevVisibilityParm = String.IsNullOrEmpty(ShowAllRevs) || ShowAllRevs == "All" ? "All" : "Latest";
+            var numDrawings = db.Drawings.Count();
+            ViewBag.NumOfDrawings = numDrawings;
             if (!String.IsNullOrEmpty(searchString))
             {
                 var drawings = db.Drawings.Where(d => d.DrawingNumber.Contains(searchString)
                                        || d.DrawingName.Contains(searchString)).ToList();
                 return View(drawings);
             }
-            var numDrawings = db.Drawings.Count();
-            ViewBag.NumOfDrawings = numDrawings;
             return View(db.Drawings.ToList());
         }
 
@@ -54,22 +54,35 @@ namespace EPM_EF.Controllers
             {
                 db.Entry(drawing).State = EntityState.Modified;
                 db.SaveChanges();
-                TempData["Message"] = "Your entry was successfully updated";
+                TempData["Message"] = "Your drawing was successfully updated";
                 return RedirectToAction("Index");
             }
             return View(drawing);
         }
         public ActionResult RevCreate(string DrawingId)
         {
-            string lastrevision = db.DrawingRevisions.Where(dr => dr.DrawingID == DrawingId).ToList().OrderBy(dr => dr.RevisionNumber).LastOrDefault().RevisionNumber;
-            var charrevision = lastrevision.ToCharArray()[0];
-            charrevision++;
+
+            var revisionList = db.DrawingRevisions.Where(dr => dr.DrawingID == DrawingId).ToList();
+            string nextrevision;
+            if (revisionList != null)
+            {
+                string lastrevision = revisionList.OrderBy(dr => dr.RevisionNumber).LastOrDefault().RevisionNumber;
+                var charrevision = lastrevision.ToCharArray()[0];
+                charrevision++;
+                nextrevision = charrevision.ToString();
+            }
+            else
+            {
+                nextrevision = "A";
+            }
+
+
+            
             ViewBag.drawingNumber = db.Drawings.Where(d => d.ID == DrawingId).SingleOrDefault().DrawingNumber;
-            string uID = Guid.NewGuid().ToString();    
-            var nextrevision = charrevision.ToString();
+            string uID = Guid.NewGuid().ToString();                
             var revision = new DrawingRevision()
             {
-                CreationDate = DateTime.Today,
+                CreationDate = DateTime.UtcNow,
                 DrawingID = DrawingId,
                 RevisionNumber = nextrevision,
                 ID = uID
@@ -86,7 +99,7 @@ namespace EPM_EF.Controllers
             {
                 db.DrawingRevisions.Add(revision);
                 db.SaveChanges();
-                TempData["Message"] = "Your entry was successfully added";
+                TempData["Message"] = "Your revision was successfully added";
                 return RedirectToAction("Index");
             }
 
@@ -97,7 +110,13 @@ namespace EPM_EF.Controllers
         // GET: Drawings/Create
         public ActionResult Create()
         {
-            return View();
+            string uID = Guid.NewGuid().ToString();
+            var drawing = new Drawing()
+            {
+                CreationDate = DateTime.UtcNow,
+                ID = uID,
+            };
+            return View(drawing);
         }
 
         // POST: Drawings/Create
@@ -111,6 +130,18 @@ namespace EPM_EF.Controllers
             {
                 db.Drawings.Add(drawing);
                 db.SaveChanges();
+                DrawingRevision firstRevision = new DrawingRevision()
+                {
+                    DrawingID = drawing.ID,
+                    RevisionNumber = "A",
+                    RevisionName = drawing.DrawingName,
+                    CreationDate = drawing.CreationDate, 
+                    ID = Guid.NewGuid().ToString()
+                    //releaseStatus = new ReleaseStatus() { ID="1"}
+            };
+                db.DrawingRevisions.Add(firstRevision);
+                db.SaveChanges();
+                TempData["Message"] = "Your drawing was successfully added";
                 return RedirectToAction("Index");
             }
 
@@ -140,8 +171,66 @@ namespace EPM_EF.Controllers
         public ActionResult DeleteConfirmed(string id)
         {
             Drawing drawing = db.Drawings.Find(id);
-            db.Drawings.Remove(drawing);
+            db.Drawings.Remove(drawing);        
+            var revisionList = db.DrawingRevisions.Where(dr => dr.DrawingID == id).ToList();
+            revisionList.ForEach(delegate (DrawingRevision revision)
+                {
+                    db.DrawingRevisions.Remove(revision);
+                });
             db.SaveChanges();
+            TempData["Message"] = "Your drawing and all it's revisions were successfully deleted";
+            return RedirectToAction("Index");
+        }
+        public ActionResult RevEdit(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            DrawingRevision revision = db.DrawingRevisions.Find(id);
+            if (revision == null)
+            {
+                return HttpNotFound();
+            }
+            SetupStatusSelectListItems();
+            return View(revision);
+        }
+
+        [HttpPost]
+        public ActionResult RevEdit([Bind(Include = "ID,RevisionNumber,RevisionName,CreationDate,DrawingID,Notes")] DrawingRevision revision)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(revision).State = EntityState.Modified;
+                db.SaveChanges();
+                TempData["Message"] = "Your revision was successfully updated";
+                return RedirectToAction("Index");
+            }
+            return View(revision);
+        }
+        public ActionResult RevDelete(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            DrawingRevision revision = db.DrawingRevisions.Find(id);
+            if (revision == null)
+            {
+                return HttpNotFound();
+            }
+            return View(revision);
+        }
+
+        // POST: Drawings/Delete/5
+        [HttpPost, ActionName("RevDelete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult RevDeleteConfirmed(string id)
+        {
+            DrawingRevision revision = db.DrawingRevisions.Find(id);
+            db.DrawingRevisions.Remove(revision);
+            db.SaveChanges();
+            TempData["Message"] = "Your revision was successfully deleted";
             return RedirectToAction("Index");
         }
 

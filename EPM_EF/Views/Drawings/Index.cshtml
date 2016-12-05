@@ -69,7 +69,7 @@
                     <td></td>
                 }
                 <td>@drawing.DrawingName</td>
-                <td>@drawing.CreationDate</td>
+                <td>@drawing.CreationDate.ToShortDateString()</td>
                 <td>
                     <div class="pull-right">
                         <a href="@Url.Action("Edit", new { id = drawing.ID })" class="btn btn-warning btn-sm margin-right">
@@ -92,13 +92,13 @@
                         <td></td>
                         <td>@revision.RevisionNumber</td>
                         <td>@revision.RevisionName</td>
-                        <td>@revision.CreationDate</td>
+                        <td>@revision.CreationDate.ToShortDateString()</td>
                         <td>
                             <div class="pull-right">
-                                <a href="@Url.Action("RevDetail", new { rid = drawing.ID + "x" + revision.ID })" class="btn btn-warning btn-sm margin-right">
+                                <a href="@Url.Action("RevEdit", new { ID = revision.ID })" class="btn btn-warning btn-sm margin-right">
                                     <span class="glyphicon glyphicon-edit"></span><span class="hidden-xs"> Edit</span>
                                 </a>
-                                <a href="@Url.Action("Delete", new { id = drawing.ID })" class="btn btn-danger btn-sm">
+                                <a href="@Url.Action("RevDelete", new { ID = revision.ID })" class="btn btn-danger btn-sm">
                                     <span class="glyphicon glyphicon-trash"></span><span class="hidden-xs"> Delete</span>
                                 </a>
                             </div>
